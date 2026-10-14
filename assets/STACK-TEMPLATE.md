@@ -20,7 +20,7 @@
 | Tool | Used for | Have it today? | Cost |
 |---|---|---|---|
 | <Claude Code> | <building and refreshing the artifact> | <yes> | <existing subscription> |
-| <Stripe API key, read-only> | <cash numbers> | <prep task C-2> | <$0> |
+| <Stripe API key, read-only> | <cash numbers> | <prep task C-1> | <$0> |
 
 ## Honest cost and maintenance
 

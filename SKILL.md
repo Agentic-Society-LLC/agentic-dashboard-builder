@@ -35,7 +35,7 @@ Every kit ends on exactly one of these. The route is a decision about **audience
 | # | Route | What it is | Pick it when | Not when |
 |---|---|---|---|---|
 | 1 | **Spreadsheet** | Google Sheets or Excel: tabs for data, one tab that is the dashboard, formulas and charts, data pasted or imported on a schedule | Five or fewer sources, daily or weekly freshness is fine, audience is me or my team, the data is already tabular, they live in Sheets | Clients or the public will see it, anything needs a login, numbers must be live, an agent needs to act on them |
-| 2 | **Claude Code artifact** | One self-contained HTML file in a folder. The data lives in a JSON block inside it; the AI refreshes the block when asked (or on a schedule it runs), the page renders the rest. No server, no account | One person or a small team, the data fits in a JSON block (hundreds of rows, not hundreds of thousands), refresh means "ask the AI" or a scheduled AI job, you want it this afternoon, you want it beautiful | Many users, logins, more than a few thousand rows, a browser on a phone that cannot open local files |
+| 2 | **Claude Code artifact** | One self-contained HTML file in a folder. The data lives in a JSON block inside it; the AI refreshes the block when asked (or on a schedule it runs), the page renders the rest. No server, no account | One person or a small team, the data fits in a JSON block (hundreds of rows, not hundreds of thousands), refresh means "ask the AI" or a scheduled AI job, you want it this afternoon, you want it beautiful | Many users, logins, more than a few thousand rows, people who need it on a phone from a link (a local file does not open that way) |
 | 3 | **Vibe-coded site** | A hosted web app built in Lovable, Bolt, v0, or Replit: pages, a login, a small database, a few API calls, deployed on a URL | A team or clients need a URL and a login, live or hourly data from a few APIs, no custom background jobs, the operator is comfortable iterating in a hosted builder and paying for it monthly | Agents must write back to systems or run on schedules, heavy background processing, strict data residency, the operator will not maintain a hosted app |
 | 4 | **Agentic harness** | A real codebase: GitHub repo, Vercel (site + serverless functions + crons), Cloudflare (DNS, workers, cache), Postgres, API keys in env, agent jobs that pull, compute, alert, and write back. Built and maintained by the AI with the operator reviewing PRs | Agents must **act** (alert, write back to the CRM, schedule, chase), many sources, scale or many clients, the operator wants to own and version it, there is someone (or an AI routine) to maintain it | First dashboard ever, nobody to maintain it, needed by Friday, the operator has never merged a pull request and does not want to start |
 
@@ -45,10 +45,10 @@ Every kit ends on exactly one of these. The route is a decision about **audience
 
 | Route | Time to first version | Monthly cost | Who keeps it alive |
 |---|---|---|---|
-| Spreadsheet | 1 to 3 hours | $0 | the operator, by pasting or scheduling imports |
+| Spreadsheet | 1 to 3 hours | $0 with manual imports; $20 to $50 for a sync add-on or a zap at daily volume | the operator, by pasting or scheduling imports |
 | Claude Code artifact | 1 to 3 hours | the AI subscription they already pay | the AI, when asked or on a scheduled run |
 | Vibe-coded site | 1 to 2 days of iterating | $25 to $100 for the builder plus any database or auth add-on | the operator in the builder, or the AI with the builder's export |
-| Agentic harness | 2 to 5 days | $0 to $40 (Vercel, Cloudflare, Postgres free tiers go far) plus API usage | the AI, with the operator reviewing changes |
+| Agentic harness | 2 to 5 days | $20 to $60 (Vercel Pro is required for a business and for crons more often than daily; Cloudflare and Postgres free tiers go far) plus API usage | the AI, with the operator reviewing changes |
 
 ## How to run the interview
 
@@ -56,7 +56,7 @@ Every kit ends on exactly one of these. The route is a decision about **audience
 
 - **Work in rounds.** Each round, ask every question you can ask *now*, meaning every question that does not depend on an answer you have not heard yet. Number each question and give your recommended answer for it. **For an operator who is not a developer, ask at most 3 questions per round**, even if more are unblocked; hold the rest. Then wait. When answers come back, work out which questions are now unblocked and ask the next round.
 - **Facts are your job, decisions are theirs.** If you are running inside the operator's own workspace (a company brain folder, a repo, their files, connected tools), look up whatever you can before asking: what is already connected, what data exists, what they have built before. Never ask the operator something you could check yourself. Decisions about what the dashboard is for, who sees it, and what counts as done belong to the operator.
-- **Settle facts by checking, not guessing.** "Can my Claude actually read my Stripe payments?" is not a question, it is a test. Make it a prep task: "Ask your AI to list your five most recent Stripe charges. If it can, this source works today."
+- **Settle facts by checking, not guessing.** "Can my Claude actually read my Stripe payments?" is not a question, it is a test. If the tool is connected to you, run the test now and mark the source works-today with the date. If it is not, make it a prep task: "Ask your AI to list your five most recent Stripe charges. If it can, this source works today."
 - **Plain language.** No jargon without a one-line explanation. MCP: a plug that lets your AI use a tool directly. API: a door a tool opens for software, usually with a key. Connector: a pre-built plug inside Claude, Zapier, or Composio. Export: a file you download and hand over. Let them answer in their own words; never ask them to type back a code or a letter.
 - **Be candid.** "That is a report, not a dashboard." "You do not need a database for forty rows." "Clients will see this, so a spreadsheet is out." Saying it now is a kindness; saying it after they built the wrong thing is not. Agreeing with them is not the goal.
 - **Reject vanity metrics.** If a number would not change what anyone does tomorrow, it does not go on the dashboard. Followers, impressions, and total signups usually fail this test. Show rate, cash collected vs. goal, and clients at risk usually pass it.
@@ -86,7 +86,7 @@ Use this exact format for every round:
 Walk these branches. The order shows what depends on what; ask anything whose prerequisites are settled.
 
 **A. Starting point** (round 1, always)
-- Ask for a brain dump in one message: their business, their role, what they check every morning (and where they go to check it), and what they wish they could see at a glance but cannot today.
+- Ask for a brain dump in one message: their business, their role, what they check every morning (and where they go to check it), and what they wish they could see at a glance but cannot today. For a non-developer this brain dump counts as one question; the two below are the other two, so round 1 stays at three.
 - What they build with (Claude app, Cowork, Claude Code, Codex, Lovable or similar, Sheets or Excel, something else) and what is already connected to their AI (CRM, Stripe, ads, calendar, inbox, Drive, Slack, community platform).
 - Have they tried to build a dashboard before? What happened to it? (The answer usually tells you the maintenance reality.)
 
@@ -99,7 +99,7 @@ Walk these branches. The order shows what depends on what; ask anything whose pr
 **C. Audience** (after B)
 - **Me**, **my team**, or **my clients or the public**. Pick one. Each sets different requirements:
   - *Me*: no login, any device, speed over polish, routes 1 and 2 are strong.
-  - *My team*: a shared URL or a shared file, roles sometimes matter, the design must survive someone who did not build it, routes 1 to 4 all possible.
+  - *My team*: a shared URL or a shared file, roles sometimes matter, the design must survive someone who did not build it, routes 1 to 4 all possible. A route 2 file is shared as a file: it lives in a synced folder (Drive, Dropbox, the company brain) and each person opens it from there; the moment someone needs it on a phone from a link, it is route 3.
   - *My clients or the public*: a login or per-client views, polish is part of the product, route 1 is out, route 2 is out unless it is exported per client, routes 3 and 4.
 - Where they will look at it: a laptop, a phone, or a wall screen. Phone-first changes the layout; a wall screen changes the type size and the refresh.
 - Who else edits or maintains it. If the answer is "nobody but me, and I am busy," the route must be one the AI can keep alive on its own.
@@ -114,7 +114,7 @@ For every number from B, settle four things. Lay them out as a table in your own
   4. **Export** (a CSV or sheet the operator downloads on a schedule; fine for route 1, a last resort elsewhere).
   5. **Manual entry** (a number someone types in weekly; honest for things like "net promoter score from the survey").
 - **Does it work today?** Yes (they have done it), or a **prep task** with a two-minute test the operator runs before building: "Ask your AI: list my five newest contacts in GoHighLevel. If it answers with real names, this works today."
-- **Writes back?** Does the dashboard, or an agent behind it, need to *change* anything in the source (tag a contact, create a task, send an alert)? Any yes pushes toward route 4 and always needs a human checkpoint.
+- **Writes back?** Does the dashboard, or an agent behind it, need to *change* anything in the source (tag a contact, create a task, send an alert)? Any yes pushes toward route 4 and always needs a human checkpoint. On a first dashboard, a write-back becomes a Should or Stretch item, or a manual step the operator does from the detail table; the dashboard itself stays read-only.
 
 If a number has no reachable source, it comes off the dashboard or becomes manual entry. Do not let "we will figure out the data later" into the kit.
 
@@ -124,7 +124,7 @@ If a number has no reachable source, it comes off the dashboard or becomes manua
 - Alerts: does anyone need to be *told* when an "oh no" line is crossed, or is looking enough? Alerts push toward routes 3 and 4.
 
 **F. The route** (after C, D, and E)
-- Print the route table from "The four routes," then score their situation against each row in one line per route: fits, fits with a cut, or out, with the reason in their words.
+- Print the route table from "The four routes" with a plain-words line under each route (for route 4, something like "a small piece of software your AI builds and runs for you, with you approving changes"), then score their situation against each row in one line per route: fits, fits with a cut, or out, with the reason in their words. Explain any term from the table the first time it appears (PRD: the one-page spec of what to build; vibe-coded: built by describing it to an AI builder; harness: the setup that lets an AI run jobs on its own).
 - Recommend **one** route and say why in two sentences. Name the one thing that would move them up a rung (for example, "the moment a client needs a login, this becomes route 3") and the one thing that would move them down ("if the Stripe connector is not working by Friday, start in a sheet").
 - If their tool of choice and the route disagree (they live in Lovable but the answer is a sheet), say so and let them decide; record the decision and the trade-off in `STACK.md`.
 - Apply the rule: when in doubt, one rung down.
@@ -164,7 +164,7 @@ Do not write the kit until every line below is a yes. If one fails, ask another 
 
 ## Output: the kit
 
-When the self-check passes and the operator confirms, write the kit as a folder called **`dashboard-kit/`** in the current folder if you can write files; otherwise print the five files in order for them to copy. Use the templates in this skill's `assets/` folder (`assets/PRD-TEMPLATE.md` and `assets/route-prompts/<route>.md`); if you cannot see the skill folder, fetch them from `https://raw.githubusercontent.com/Agentic-Society-LLC/agentic-dashboard-builder/main/assets/`. Keep the section headings exactly as the templates have them; the next AI session is built to read them.
+When the self-check passes and the operator confirms, write the kit as a folder called **`dashboard-kit/`** in the current folder if you can write files; otherwise print the five files in order for them to copy. Use the templates in this skill's `assets/` folder: `PRD-TEMPLATE.md`, `STACK-TEMPLATE.md`, `CONNECTORS-TEMPLATE.md`, `DESIGN-TEMPLATE.md`, and for `BUILD-PROMPT.md` the one route prompt that matches the route: `route-prompts/spreadsheet.md`, `route-prompts/claude-artifact.md`, `route-prompts/vibe-coded-site.md`, or `route-prompts/agentic-harness.md`. If you cannot see the skill folder, fetch them from `https://raw.githubusercontent.com/Agentic-Society-LLC/agentic-dashboard-builder/main/assets/` (same paths). Keep the section headings exactly as the templates have them; the next AI session is built to read them.
 
 | File | What it is | Who reads it |
 |---|---|---|
@@ -176,13 +176,13 @@ When the self-check passes and the operator confirms, write the kit as a folder 
 
 **Then the hand-off line, word for word for the chosen route:**
 - **Spreadsheet:** "Open a new Google Sheet (or Excel workbook), then open `BUILD-PROMPT.md`, paste it into your AI, and let it walk you through the tabs. Data tabs first, dashboard tab last."
-- **Claude Code artifact:** "Open Claude Code in the folder where you want the dashboard to live (your company brain folder is best), paste `BUILD-PROMPT.md`, and say go. You will have a file called `dashboard/index.html` to open in your browser."
+- **Claude Code artifact:** "Open Claude Code in the folder where you want the dashboard to live (your company brain folder is best), paste `BUILD-PROMPT.md`, and say go. You will have a file called `dashboard/index.html` to open in your browser." If you are already running in Claude Code in that folder, say instead: "We are already here. Say 'build it' and I will start from the kit."
 - **Vibe-coded site:** "Open Lovable (or your builder), start a new project, paste `BUILD-PROMPT.md` as the first message. Connect the database and the login when it asks; `CONNECTORS.md` has every key it will need."
 - **Agentic harness:** "Create an empty GitHub repo, open Claude Code in a clone of it, paste `BUILD-PROMPT.md`, and say go. Have your Vercel and Cloudflare logins ready; `CONNECTORS.md` lists every secret the deployment needs."
 
 Then stop. Do not start building unless they ask.
 
-End the kit's `PRD.md` with one line, no more: *Built with the Agentic Dashboard Builder from Agentic Society. If you want this running as an AI employee that keeps it current and acts on it, that is what the Society does: agenticsociety.com/meet.*
+`PRD-TEMPLATE.md` ends with one line crediting the Agentic Dashboard Builder and pointing at agenticsociety.com/meet. Keep that line as it is; do not add a second one.
 
 ## Route check and kit refresh
 
